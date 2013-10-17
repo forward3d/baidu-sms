@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
                         'lib/baidu-sms/reports.rb',
                         'lib/baidu-sms/level_of_details.rb',
                         'lib/baidu-sms/device.rb',
-                        'lib/baidu-sms/version.rb'],
+                        'lib/baidu-sms/version.rb']
   
   gem.executables   = [] #gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = [] #gem.files.grep(%r{^(test|spec|features)/})
