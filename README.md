@@ -1,8 +1,8 @@
-# Baidu Searach Marketing Service
+# Baidu Search Marketing Service
 
-Initialize service
+Initialise service
 
-	service = BaiduSMS::ReportService.new({})
+	service = BaiduSMS::ReportService.new({username: '...', password: '...', token: '...'})
 
 Create report and get it's ID
 
