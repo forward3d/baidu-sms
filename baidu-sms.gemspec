@@ -24,4 +24,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'savon'
 
   gem.add_development_dependency 'debugger'
+  
+  gem.license = 'MIT'
 end
