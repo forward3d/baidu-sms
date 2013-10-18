@@ -15,8 +15,8 @@ Initialise service
 Create report and get it's ID
 
 	params = {performanceData: %w[cost cpc click impression ctr cpm conversion],
-	          startDate: (Date.today - 1).strftime("%FT%T"),
-	          endDate: (Date.today - 1).strftime("%FT%T"),
+	          startDate: Date.today - 1,
+	          endDate: Date.today - 1,
 	          levelOfDetails: BaiduSMS::LevelOfDetails::ACCOUNT}
 
 	id = service.create_report(BaiduSMS::Reports::ACCOUNTS, params)
