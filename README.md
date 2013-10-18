@@ -1,5 +1,13 @@
 # Baidu Search Marketing Service
 
+Provides functionality to pull reports from Baidu Search Marketing Service
+
+## Installation
+
+    gem install baidu-sms
+
+## Usage
+
 Initialise service
 
 	service = BaiduSMS::ReportService.new({username: '...', password: '...', token: '...'})
@@ -25,7 +33,7 @@ You can reference report type and level of detail by module constant or by name
 	# equals
 	BaiduSMS::LevelOfDetails.from_name('account')
 
-Get report URL by report ID if ready
+Get report URL by report ID if ready (or retry later if not ready yet)
 
 	service.report_url(id) if service.report_ready?(id)
 
