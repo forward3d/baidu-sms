@@ -1,12 +1,18 @@
+require 'curl'
+
 module BaiduSMS
   class ReportService
     include BaiduSMS::Core
 
     REPORT_SERVICE = "ReportService"    
     MESSAGE_PARAM_ORDER = [ :performanceData, :startDate, :endDate, :levelOfDetails, :reportType, :device ]
+    DEFAULT_OPTIONS = { max_retries: 10, retry_timeout: false, current_retry: 0 }
 
-    def initialize(credentials)
+    attr_reader :max_retries, :retry_timeout, :current_retry
+
+    def initialize(credentials, options = {})
       @client = initialise_client(REPORT_SERVICE, credentials)
+      set_options(options)
     end
 
     def create_report(report, params)
@@ -29,11 +35,28 @@ module BaiduSMS
     private
     
     def call(*args)
-      response = @client.call(*args)
       # debugger
-      header = response.header[:res_header]
-      raise BaiduSMSInvalidRequestError.new("#{header[:failures][:code]} - #{header[:failures][:message]}") unless header[:status].to_i == 0
+      response = nil
+
+      begin
+        response = @client.call(*args)
+        header = response.header[:res_header]
+        raise BaiduSMSInvalidRequestError.new("#{header[:failures][:code]} - #{header[:failures][:message]}") unless header[:status].to_i == 0
+      rescue Curl::Err::TimeoutError => e
+        raise e unless retry_timeout && current_retry < max_retries
+        current_retry += 1
+        sleep [10 * (2 ** current_retry), 600].min
+        p "Retry number: #{current_retry}"
+        response = self.call(args)
+      end
+
       response
+    end
+
+    def set_options(options)
+      DEFAULT_OPTIONS.each do |key, value|
+        instance_variable_set("@#{key}", options[key] || value)
+      end
     end
     
     def process_message_params(message)
