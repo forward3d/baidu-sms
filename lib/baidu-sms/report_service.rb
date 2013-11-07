@@ -1,3 +1,5 @@
+require 'curl'
+
 module BaiduSMS
   class ReportService
     include BaiduSMS::Core
@@ -5,6 +7,7 @@ module BaiduSMS
     REPORT_SERVICE = "ReportService"    
     MESSAGE_PARAM_ORDER = [ :performanceData, :startDate, :endDate, :levelOfDetails, :reportType, :device ]
     DEFAULT_OPTIONS = { max_retries: 10, retry_timeout: false, current_retry: 0 }
+    RETRYABLE_EXCEPTIONS = [HTTPI::Error, Curl::Err::CurlError]
 
     attr_reader :max_retries, :retry_timeout, :current_retry
 
@@ -40,15 +43,18 @@ module BaiduSMS
         response = @client.call(*args)
         header = response.header[:res_header]
         raise BaiduSMSInvalidRequestError.new("#{header[:failures][:code]} - #{header[:failures][:message]}") unless header[:status].to_i == 0
-      rescue HTTPI::TimeoutError => e
+      rescue *RETRYABLE_EXCEPTIONS => e
         raise e unless retry_timeout && current_retry < max_retries
-        current_retry += 1
-        sleep [10 * (2 ** current_retry), 600].min
-        p "Retry number: #{current_retry}"
-        response = self.call(args)
+        response = retry_call(*args)
       end
 
       response
+    end
+
+    def retry_call(*args)
+      current_retry += 1
+      p "Retry number: #{current_retry}"
+      self.call(*args)
     end
 
     def set_options(options)

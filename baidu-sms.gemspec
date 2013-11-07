@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["robert.borkowski@forward3d.com", "daniel.padden@forward3d.com"]
   gem.description   = %q{Baidu Search Marketing Service API}
   gem.summary       = %q{Wrapper for connecting to the Baidu Search Marketing API}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/forward3d/baidu-sms"
 
   gem.files         = ['lib/baidu-sms.rb',
                         'lib/baidu-sms/core.rb',
@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency 'savon'
+  gem.add_dependency 'curb'
 
   gem.add_development_dependency 'debugger'
   
