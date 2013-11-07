@@ -1,5 +1,3 @@
-require 'curl'
-
 module BaiduSMS
   class ReportService
     include BaiduSMS::Core
@@ -42,7 +40,7 @@ module BaiduSMS
         response = @client.call(*args)
         header = response.header[:res_header]
         raise BaiduSMSInvalidRequestError.new("#{header[:failures][:code]} - #{header[:failures][:message]}") unless header[:status].to_i == 0
-      rescue Curl::Err::TimeoutError => e
+      rescue HTTPI::TimeoutError => e
         raise e unless retry_timeout && current_retry < max_retries
         current_retry += 1
         sleep [10 * (2 ** current_retry), 600].min
