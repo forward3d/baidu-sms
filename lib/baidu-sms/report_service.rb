@@ -1,5 +1,3 @@
-require 'curl'
-
 module BaiduSMS
   class ReportService
     include BaiduSMS::Core

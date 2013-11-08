@@ -1,3 +1,4 @@
+require 'savon'
 require_relative 'baidu-sms/core'
 require_relative 'baidu-sms/report_service'
 require_relative 'baidu-sms/reports'
