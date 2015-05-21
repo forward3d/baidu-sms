@@ -1,3 +1,4 @@
-test/unit/credentials.yml
+credentials.yml
 Gemfile.lock
 *.gem
+

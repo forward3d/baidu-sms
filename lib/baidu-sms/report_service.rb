@@ -2,64 +2,31 @@ module BaiduSMS
   class ReportService
     include BaiduSMS::Core
 
-    REPORT_SERVICE = "ReportService"    
+    SERVICE_NAME = "ReportService"    
     MESSAGE_PARAM_ORDER = [ :performanceData, :startDate, :endDate, :levelOfDetails, :reportType, :device ]
-    DEFAULT_OPTIONS = { max_retries: 10, retry_timeout: false, current_retry: 0 }
-    RETRYABLE_EXCEPTIONS = [HTTPI::Error, Curl::Err::CurlError]
-
-    attr_reader :max_retries, :retry_timeout, :current_retry
 
     def initialize(credentials, options = {})
-      @client = initialise_client(REPORT_SERVICE, credentials)
-      set_options(options)
+      @client = initialise_client(SERVICE_NAME, credentials)
     end
 
     def create_report(report, params)
       params.merge!({reportType: report})
       message = { reportRequestType: process_message_params(params) }
-      response = call(:get_professional_report_id, message: message)
+      response = @client.call(:get_professional_report_id, message: message)
       response.body[:get_professional_report_id_response][:report_id]
     end
 
     def report_ready?(report_id)
-      response = call(:get_report_state, message: { report_id: report_id })
+      response = @client.call(:get_report_state, message: { report_id: report_id })
       response.body[:get_report_state_response][:is_generated].to_i == 3
     end
 
     def report_url(report_id)
-      response = call(:get_report_file_url, message: { report_id: report_id })
+      response = @client.call(:get_report_file_url, message: { report_id: report_id })
       response.body[:get_report_file_url_response][:report_file_path]
     end
     
     private
-    
-    def call(*args)
-      # debugger
-      response = nil
-
-      begin
-        response = @client.call(*args)
-        header = response.header[:res_header]
-        raise BaiduSMSInvalidRequestError.new("#{header[:failures][:code]} - #{header[:failures][:message]}") unless header[:status].to_i == 0
-      rescue *RETRYABLE_EXCEPTIONS => e
-        raise e unless retry_timeout && current_retry < max_retries
-        response = retry_call(*args)
-      end
-
-      response
-    end
-
-    def retry_call(*args)
-      current_retry += 1
-      p "Retry number: #{current_retry}"
-      self.call(*args)
-    end
-
-    def set_options(options)
-      DEFAULT_OPTIONS.each do |key, value|
-        instance_variable_set("@#{key}", options[key] || value)
-      end
-    end
     
     def process_message_params(message)
       MESSAGE_PARAM_ORDER.inject({}) do |result, param|
@@ -78,6 +45,5 @@ module BaiduSMS
       date.strftime("%FT%T")
     end
     
-    class BaiduSMSInvalidRequestError < StandardError; end
   end
 end

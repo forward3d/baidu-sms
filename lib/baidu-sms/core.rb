@@ -17,13 +17,14 @@ module BaiduSMS
       client_options = set_client_options(options)
       wsdl_namespace_location = BAIDU_HOST[:secure] + SMS_RESOURCE + service + "?wsdl"
       authorise_namespace_location = BAIDU_HOST[:basic] + COMMON_RESOURCE
-      Savon.client(wsdl: wsdl_namespace_location,
-                  namespaces: { "xmlns:#{AUTH_NS}" => authorise_namespace_location },
-                  soap_header: authorise_headers(credentials[:username], credentials[:password], credentials[:token]),
-                  open_timeout: client_options[:open_timeout],
-                  read_timeout: client_options[:read_timeout],
-                  ssl_verify_mode: client_options[:ssl_verify_mode]
-                  )
+      client = Savon.client(wsdl: wsdl_namespace_location,
+        namespaces: { "xmlns:#{AUTH_NS}" => authorise_namespace_location },
+        soap_header: authorise_headers(credentials[:username], credentials[:password], credentials[:token]),
+        open_timeout: client_options[:open_timeout],
+        read_timeout: client_options[:read_timeout],
+        ssl_verify_mode: client_options[:ssl_verify_mode]
+      )
+      ClientWrapper.new(client)
     end
 
     private

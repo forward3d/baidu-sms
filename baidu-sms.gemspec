@@ -22,8 +22,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency 'savon'
-
-  gem.add_development_dependency 'debugger'
+  gem.add_dependency 'curb'
+  gem.add_development_dependency 'rspec'
   
   gem.license = 'MIT'
 end
