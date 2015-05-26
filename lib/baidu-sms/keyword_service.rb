@@ -12,7 +12,11 @@ module BaiduSMS
     # {:keyword_id=>"1", :adgroup_id=>"1", :keyword=>"something", :price=>"1.00", :pc_destination_url=>"url", :match_type=>"2", :pause=>false, :status=>"41"}
     def get_keyword_by_adgroup_id(*adgroup_ids)
       response = @client.call(:get_keyword_by_adgroup_id, message: { adgroupIds: adgroup_ids })
-      response.body[:get_keyword_by_adgroup_id_response][:group_keywords][:keyword_types]
+      keyword_info = response.body[:get_keyword_by_adgroup_id_response][:group_keywords][:keyword_types]
+      keyword_info.each do |keyword|
+        keyword[:status] = BaiduSMS::KeywordStatuses.lookup(keyword[:status])
+      end
+      keyword_info
     end
     
   end
