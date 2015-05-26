@@ -1,7 +1,7 @@
 module BaiduSMS
   class KeywordStatuses
     
-    CODES = {
+    STATUS_CODES = {
       '41' => 'eligible',
       '42' => 'paused',
       '43' => 'disapproved',
@@ -15,8 +15,8 @@ module BaiduSMS
     }
     
     def self.lookup(code)
-      raise UnknownStatusException, "Cannot find a status for status number #{code}" unless CODES[code]
-      CODES[code]
+      raise UnknownStatusException, "Cannot find a status for status number #{code}" unless STATUS_CODES[code]
+      STATUS_CODES[code]
     end
     
   end
