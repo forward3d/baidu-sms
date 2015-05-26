@@ -21,6 +21,6 @@ module BaiduSMS
     
   end
   
-  class UnknownStatus < Exception ; end
+  class UnknownStatusException < Exception ; end
   
 end
