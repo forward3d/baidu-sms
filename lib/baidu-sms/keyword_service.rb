@@ -13,6 +13,8 @@ module BaiduSMS
     def get_keyword_by_adgroup_id(*adgroup_ids)
       response = @client.call(:get_keyword_by_adgroup_id, message: { adgroupIds: adgroup_ids })
       keyword_info = response.body[:get_keyword_by_adgroup_id_response][:group_keywords][:keyword_types]
+      # When we get a single keyword, it's a hash, not an array; coerce it into an array
+      keyword_info = keyword_info.is_a?(Hash) ? [keyword_info] : keyword_info
       keyword_info.each do |keyword|
         keyword[:status] = BaiduSMS::KeywordStatuses.lookup(keyword[:status])
       end
