@@ -17,6 +17,7 @@ module BaiduSMS
       keyword_info = keyword_info.is_a?(Hash) ? [keyword_info] : keyword_info
       keyword_info.each do |keyword|
         keyword[:status] = BaiduSMS::KeywordStatuses.lookup(keyword[:status])
+        keyword[:match_type] = BaiduSMS::KeywordMatchTypes.lookup(keyword[:match_type])
       end
       keyword_info
     end
