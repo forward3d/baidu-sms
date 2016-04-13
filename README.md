@@ -1,6 +1,8 @@
 # Baidu Search Marketing Service
 
-This gem is an easy-to-use, thin wrapper around the Baidu Search Marketing Service API.
+This gem is an easy-to-use, thin wrapper around the Baidu Search Marketing Service SOAP API v3.
+
+This gem does not support the v3 JSON API, nor does it support the v4 JSON API or the BulkJobService.
 
 ## Installation
 
